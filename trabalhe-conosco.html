@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Trabalhe Conosco - Casanova Butcher Shop & Café</title>
+
+<style>
+  :root{
+    --red:#B12621;
+    --sand:#E4CFA3;
+    --gold:#C6A545;
+    --ink:#121212;
+    --cream:#FCF7EC;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:linear-gradient(180deg,var(--cream),#fff);color:var(--ink)}
+
+  .container{max-width:1200px;margin:0 auto;padding:0 16px}
+
+  /* Announcement bar */
+  .announcement{background:var(--red);color:#fff;font-size:14px}
+  .announcement .container{padding:8px 16px;text-align:center}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--sand);backdrop-filter:saturate(1.1) blur(6px)}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img {
+  height: 80px;
+  width: 80px;
+  object-fit: contain;
+}
+
+  .brand .title{font-weight:800}
+  .brand .sub{font-size:12px;color:var(--gold)}
+  nav{display:none;gap:24px}
+  @media (min-width:768px){nav{display:flex}}
+  nav a{text-decoration:none;color:var(--ink);font-size:15px}
+  .actions{display:flex;align-items:center;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap;border:none;cursor:pointer;font-size:15px}
+  .btn-outline{border:1px solid var(--gold);color:var(--ink);background:#fff}
+  .btn-dark{background:#121212;color:#fff}
+  .btn-red{background:var(--red);color:#fff}
+  .btn-ghost{border:1px solid var(--sand);color:#fff;background:transparent}
+
+  /* hide desktop nav on small screens */
+  .nav-desktop { display:none; }
+  @media (min-width:768px){ .nav-desktop { display:flex; gap:24px; } }
+
+  /* place actions; hide call/order on very small if you want */
+  .actions{ display:flex; align-items:center; gap:8px; }
+
+  /* Hamburger */
+  .nav-toggle{
+    display:inline-flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:4px;
+    width:40px; height:40px;
+    margin-left:4px;
+    border:1px solid var(--sand);
+    border-radius:10px;
+    background:#fff;
+  }
+  .nav-toggle .bar{
+    display:block; width:18px; height:2px; background:var(--ink); margin:0 auto;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  @media (min-width:768px){ .nav-toggle{ display:none; } }
+
+  /* Mobile menu panel */
+  .mobile-menu{
+    position:fixed; top:103px; left:0; right:0;
+    background:#fff;
+    border-bottom:1px solid var(--sand);
+    z-index:900;
+    display:grid;
+    gap:8px;
+    padding:16px;
+    transform:translateY(-8px);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .mobile-menu.open{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .mm-link{
+    padding:12px 10px;
+    border-radius:10px;
+    background:#faf9f5;
+    border:1px solid var(--sand);
+    text-decoration:none;
+    color:var(--ink);
+  }
+  .mm-ctas{ display:flex; gap:8px; padding-top:8px; }
+
+  /* lock body scroll when menu is open */
+  .body-lock{ overflow:hidden; }
+
+  /* make header a bit taller on mobile so menu clears it */
+  header{ position:sticky; top:0; z-index:950; }
+  .header-inner{ min-height:64px; }
+
+  /* Page Hero Section */
+  .page-hero{
+    background:var(--red);
+    color:#fff;
+    padding:60px 0;
+    text-align:center;
+  }
+  .page-hero h1{
+    font-size:36px;
+    font-weight:800;
+    margin:0 0 12px;
+    line-height:1.2;
+  }
+  @media (min-width:768px){
+    .page-hero h1{font-size:48px}
+  }
+  .page-hero p{
+    font-size:18px;
+    margin:0;
+    opacity:0.95;
+  }
+
+  /* Main Content */
+  .main-content{
+    padding:56px 0 80px;
+  }
+
+  /* Jobs Section */
+  .jobs-section{
+    margin-bottom:56px;
+  }
+  .jobs-grid{
+    display:grid;
+    gap:24px;
+    margin-top:32px;
+  }
+  @media (min-width:768px){
+    .jobs-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  .job-card{
+    border:1px solid var(--sand);
+    border-radius:24px;
+    background:#fff;
+    padding:32px;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+  }
+  .job-title{
+    font-size:24px;
+    font-weight:800;
+    margin:0 0 16px;
+    color:var(--red);
+  }
+  .requirements-list{
+    list-style:none;
+    padding:0;
+    margin:16px 0 0;
+  }
+  .requirements-list li{
+    padding:8px 0;
+    padding-left:24px;
+    position:relative;
+  }
+  .requirements-list li:before{
+    content:"•";
+    position:absolute;
+    left:0;
+    color:var(--red);
+    font-weight:bold;
+    font-size:20px;
+  }
+
+  /* Form Section */
+  .form-section{
+    background:#fff;
+    border:1px solid var(--sand);
+    border-radius:24px;
+    padding:40px;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+  }
+  @media (max-width:767px){
+    .form-section{padding:24px}
+  }
+  .form-title{
+    font-size:32px;
+    font-weight:800;
+    margin:0 0 8px;
+  }
+  .form-subtitle{
+    color:#666;
+    margin:0 0 32px;
+    font-size:16px;
+  }
+  .form-group{
+    margin-bottom:24px;
+  }
+  .form-label{
+    display:block;
+    font-weight:600;
+    margin-bottom:8px;
+    color:var(--ink);
+  }
+  .form-input,
+  .form-textarea{
+    width:100%;
+    padding:12px 16px;
+    border:1px solid var(--sand);
+    border-radius:12px;
+    font-size:16px;
+    font-family:inherit;
+    background:#fff;
+    color:var(--ink);
+    transition:border-color 0.2s;
+  }
+  .form-input:focus,
+  .form-textarea:focus{
+    outline:none;
+    border-color:var(--red);
+  }
+  .form-textarea{
+    min-height:100px;
+    resize:vertical;
+  }
+  .form-required{
+    color:var(--red);
+  }
+  .form-submit{
+    width:100%;
+    padding:14px 24px;
+    font-size:16px;
+    margin-top:8px;
+  }
+  .form-message{
+    padding:12px 16px;
+    border-radius:12px;
+    margin-bottom:24px;
+    display:none;
+  }
+  .form-message.success{
+    background:#d4edda;
+    color:#155724;
+    border:1px solid #c3e6cb;
+    display:block;
+  }
+  .form-message.error{
+    background:#f8d7da;
+    color:#721c24;
+    border:1px solid #f5c6cb;
+    display:block;
+  }
+
+  /* Info Box */
+  .info-box{
+    background:var(--sand);
+    border-radius:16px;
+    padding:24px;
+    margin-top:32px;
+  }
+  .info-box h3{
+    margin:0 0 12px;
+    font-size:20px;
+    font-weight:700;
+  }
+  .info-box p{
+    margin:0;
+    color:#333;
+  }
+
+  /* Section Title */
+  .section-title{
+    font-size:32px;
+    font-weight:800;
+    margin:0 0 12px;
+  }
+  @media (min-width:768px){
+    .section-title{font-size:40px}
+  }
+
+  /* Footer */
+  footer{border-top:1px solid var(--sand);background:var(--cream);padding:40px 16px;text-align:center;font-size:14px}
+</style>
+</head>
+
+<body>
+  <!-- Announcement -->
+  <div class="announcement">
+    <div class="container">
+      Açougue, padaria e mercearia brasileira autêntica • 494 Main St, Woburn, MA 01801
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="index.html">
+          <img src="images/logo.png" alt="Casanova logo" />
+        </a>
+      </div>
+
+      <!-- Desktop nav -->
+      <nav class="nav-desktop">
+        <a href="index.html#butcher">Açougue</a>
+        <a href="index.html#bakery">Padaria</a>
+        <a href="index.html#grocery">Produtos Brasileiros</a>
+        <a href="index.html#visit">Visite-nos</a>
+        <a href="index.html#shop-online">Compre Online</a>
+        <a href="trabalhe-conosco.html">Trabalhe Conosco</a>
+      </nav>
+
+      <div class="actions">
+        <a class="btn btn-outline" href="tel:(781) 935-3800">Ligar</a>
+        <a class="btn btn-dark" href="index.html#shop-online">Pedir Online</a>
+
+        <!-- Mobile hamburger -->
+        <button class="nav-toggle" aria-label="Abrir menu" aria-expanded="false">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu panel -->
+    <div class="mobile-menu" id="mobileMenu" hidden>
+      <a href="index.html#butcher" class="mm-link">Açougue</a>
+      <a href="index.html#bakery" class="mm-link">Padaria</a>
+      <a href="index.html#grocery" class="mm-link">Produtos Brasileiros</a>
+      <a href="index.html#visit" class="mm-link">Visite-nos</a>
+      <a href="index.html#shop-online" class="mm-link">Compre Online</a>
+      <a href="trabalhe-conosco.html" class="mm-link">Trabalhe Conosco</a>
+      <div class="mm-ctas">
+        <a class="btn btn-outline" href="tel:(781) 935-3800">Ligar</a>
+        <a class="btn btn-red" href="index.html#shop-online">Pedir Online</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>ESTAMOS CONTRATANDO</h1>
+      <p>Junte-se à equipe Casanova Butcher Shop & Café</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="main-content">
+    <div class="container">
+      
+      <!-- Jobs Available -->
+      <div class="jobs-section">
+        <h2 class="section-title">Vagas Disponíveis</h2>
+        <p style="font-size:18px;color:#666;margin-bottom:32px">
+          Estamos procurando pessoas dedicadas e proativas para fazer parte da nossa equipe.
+        </p>
+
+        <div class="jobs-grid">
+          <!-- Job Card 1: Caixa -->
+          <div class="job-card">
+            <h3 class="job-title">CAIXA</h3>
+            <p style="margin:0 0 16px;color:#333">
+              Procuramos um caixa para fazer parte da nossa equipe. Ambiente dinâmico e acolhedor.
+            </p>
+            <h4 style="font-size:18px;font-weight:700;margin:20px 0 12px">Requisitos:</h4>
+            <ul class="requirements-list">
+              <li>Pontualidade</li>
+              <li>Proatividade</li>
+              <li>Disponibilidade para trabalhar aos finais de semana</li>
+              <li>Autorização de trabalho válida</li>
+            </ul>
+          </div>
+
+          <!-- Job Card 2: Geral -->
+          <div class="job-card">
+            <h3 class="job-title">VAGAS GERAIS</h3>
+            <p style="margin:0 0 16px;color:#333">
+              Estamos sempre procurando pessoas talentosas para diversas posições em nosso açougue, padaria e café.
+            </p>
+            <h4 style="font-size:18px;font-weight:700;margin:20px 0 12px">Requisitos:</h4>
+            <ul class="requirements-list">
+              <li>Pontualidade</li>
+              <li>Proatividade</li>
+              <li>Disponibilidade para trabalhar aos finais de semana</li>
+              <li>Autorização de trabalho válida</li>
+            </ul>
+          </div>
+
+          <!-- Job Card 3: Cozinheira -->
+          <div class="job-card">
+            <h3 class="job-title">COZINHEIRA</h3>
+            <p style="margin:0 0 16px;color:#333">
+              Procuramos uma cozinheira experiente para fazer parte da nossa equipe. Ambiente dinâmico e acolhedor.
+            </p>
+            <h4 style="font-size:18px;font-weight:700;margin:20px 0 12px">Requisitos:</h4>
+            <ul class="requirements-list">
+              <li>Experiência mínimo de 6 meses</li>
+              <li>Pontualidade</li>
+              <li>Proatividade</li>
+              <li>Disponibilidade para trabalhar aos finais de semana</li>
+              <li>Autorização de trabalho válida</li>
+            </ul>
+          </div>
+
+          <!-- Job Card 4: Auxiliar de Cozinha -->
+          <div class="job-card">
+            <h3 class="job-title">AUXILIAR DE COZINHA</h3>
+            <p style="margin:0 0 16px;color:#333">
+              Procuramos um auxiliar de cozinha para fazer parte da nossa equipe. Ambiente dinâmico e acolhedor.
+            </p>
+            <h4 style="font-size:18px;font-weight:700;margin:20px 0 12px">Requisitos:</h4>
+            <ul class="requirements-list">
+              <li>Pontualidade</li>
+              <li>Proatividade</li>
+              <li>Disponibilidade para trabalhar aos finais de semana</li>
+              <li>Autorização de trabalho válida</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Form -->
+      <div class="form-section">
+        <h2 class="form-title">Candidatar-se</h2>
+        <p class="form-subtitle">
+          Preencha o formulário abaixo e entraremos em contato em breve.
+        </p>
+
+        <div id="formMessage" class="form-message"></div>
+
+        <form id="applicationForm">
+
+          <div class="form-group">
+            <label for="name" class="form-label">
+              Nome Completo <span class="form-required">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name" 
+              class="form-input" 
+              required
+              placeholder="Seu nome completo"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">
+              E-mail <span class="form-required">*</span>
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              required
+              placeholder="seu@email.com"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">
+              Telefone <span class="form-required">*</span>
+            </label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone" 
+              class="form-input" 
+              required
+              placeholder="(781) 123-4567"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="address" class="form-label">
+              Endereço <span class="form-required">*</span>
+            </label>
+            <textarea 
+              id="address" 
+              name="address" 
+              class="form-textarea" 
+              required
+              placeholder="Rua, número, cidade, estado, CEP"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="position" class="form-label">
+              Posição de Interesse
+            </label>
+            <select id="position" name="position" class="form-input">
+              <option value="">Selecione uma opção</option>
+              <option value="Caixa">Caixa</option>
+              <option value="COZINHEIRA">COZINHEIRA</option>
+              <option value="AUXILIAR DE COZINHA">AUXILIAR DE COZINHA</option>
+              <option value="Açougueiro">Açougueiro</option>
+              <option value="Padeiro">Padeiro</option>
+              <option value="Atendente">Atendente</option>
+              <option value="Outra">Outra</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message" class="form-label">
+              Mensagem (opcional)
+            </label>
+            <textarea 
+              id="message" 
+              name="message" 
+              class="form-textarea" 
+              placeholder="Conte-nos um pouco sobre você e sua experiência..."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-red form-submit">
+            Enviar Candidatura
+          </button>
+        </form>
+
+        <div class="info-box">
+          <h3>Dúvidas?</h3>
+          <p>
+            Se preferir, você também pode se candidatar presencialmente em nossa loja ou entrar em contato conosco:
+            <br><br>
+            <strong>Telefone:</strong> <a href="tel:(781) 935-3800" style="color:var(--red);text-decoration:none">(781) 935-3800</a><br>
+            <strong>E-mail:</strong> <a href="mailto:contact@casanovabutchercafe.com" style="color:var(--red);text-decoration:none">contact@casanovabutchercafe.com</a><br>
+            <strong>Endereço:</strong> 484 Main St, Woburn, MA 01801
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © <span id="year"></span> Casanova Butcher Shop & Café • Todos os direitos reservados.
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile menu toggle
+    const toggle = document.querySelector('.nav-toggle');
+    const panel  = document.getElementById('mobileMenu');
+
+    function setOpen(open){
+      toggle.setAttribute('aria-expanded', open);
+      if(open){
+        panel.hidden = false;
+        requestAnimationFrame(()=> panel.classList.add('open'));
+        document.body.classList.add('body-lock');
+      }else{
+        panel.classList.remove('open');
+        setTimeout(()=> panel.hidden = true, 200);
+        document.body.classList.remove('body-lock');
+      }
+    }
+
+    toggle.addEventListener('click', ()=>{
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      setOpen(!open);
+    });
+
+    // close when clicking a menu link
+    panel.addEventListener('click', (e)=>{
+      if(e.target.matches('.mm-link, .mm-ctas a')) setOpen(false);
+    });
+
+    // close on escape
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') setOpen(false);
+    });
+
+    // Form submission using Formspree
+    // To set up Formspree:
+    // 1. Go to https://formspree.io/ and create a free account
+    // 2. Create a new form and get your form endpoint (e.g., https://formspree.io/f/YOUR_FORM_ID)
+    // 3. Replace 'YOUR_FORMSPREE_ENDPOINT' below with your actual endpoint
+    // 4. Formspree will send emails to contact@casanovabutchercafe.com automatically
+    
+    const form = document.getElementById('applicationForm');
+    const formMessage = document.getElementById('formMessage');
+    
+    // Replace this with your Formspree endpoint
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT';
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Enviando...';
+
+      // Hide previous messages
+      formMessage.className = 'form-message';
+      formMessage.style.display = 'none';
+
+      // Get form values
+      const formData = {
+        _to: 'contact@casanovabutchercafe.com',
+        _subject: 'Nova Candidatura - Casanova Butcher Shop & Café',
+        _replyto: document.getElementById('email').value,
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        position: document.getElementById('position').value || 'Não especificado',
+        message: document.getElementById('message').value || ''
+      };
+
+      try {
+        // Send to Formspree
+        const response = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+          formMessage.className = 'form-message success';
+          formMessage.textContent = 'Obrigado! Sua candidatura foi enviada com sucesso. Entraremos em contato em breve.';
+          formMessage.style.display = 'block';
+          form.reset();
+          formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          const data = await response.json();
+          throw new Error(data.error || 'Erro ao enviar formulário');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        
+        // Fallback: Use mailto if Formspree fails
+        const subject = encodeURIComponent('Nova Candidatura - Casanova Butcher Shop & Café');
+        const body = encodeURIComponent(
+          `Nova Candidatura Recebida\n\n` +
+          `Nome: ${formData.name}\n` +
+          `E-mail: ${formData.email}\n` +
+          `Telefone: ${formData.phone}\n` +
+          `Endereço: ${formData.address}\n` +
+          `Posição de Interesse: ${formData.position}\n\n` +
+          `Mensagem:\n${formData.message}`
+        );
+        
+        formMessage.className = 'form-message error';
+        formMessage.innerHTML = 'Erro ao enviar formulário. <a href="mailto:contact@casanovabutchercafe.com?subject=' + subject + '&body=' + body + '" style="color:inherit;text-decoration:underline">Clique aqui para enviar por e-mail</a> ou envie diretamente para contact@casanovabutchercafe.com';
+        formMessage.style.display = 'block';
+        formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+      }
+    });
+  </script>
+
+</body>
+</html>
+

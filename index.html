@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Casanova Butcher & Café</title>
+
+<style>
+  :root{
+    --red:#B12621;
+    --sand:#E4CFA3;
+    --gold:#C6A545;
+    --ink:#121212;
+    --cream:#FCF7EC;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:linear-gradient(180deg,var(--cream),#fff);color:var(--ink)}
+
+  .container{max-width:1200px;margin:0 auto;padding:0 16px}
+
+  /* Announcement bar */
+  .announcement{background:var(--red);color:#fff;font-size:14px}
+  .announcement .container{padding:8px 16px;text-align:center}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--sand);backdrop-filter:saturate(1.1) blur(6px)}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img {
+  height: 80px;
+  width: 80px;
+  object-fit: contain;
+}
+
+  .brand .title{font-weight:800}
+  .brand .sub{font-size:12px;color:var(--gold)}
+  nav{display:none;gap:24px}
+  @media (min-width:768px){nav{display:flex}}
+  nav a{text-decoration:none;color:var(--ink);font-size:15px}
+  .actions{display:flex;align-items:center;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;font-weight:600;text-decoration:none;white-space:nowrap}
+  .btn-outline{border:1px solid var(--gold);color:var(--ink);background:#fff}
+  .btn-dark{background:#121212;color:#fff}
+  .btn-red{background:var(--red);color:#fff}
+  .btn-ghost{border:1px solid var(--sand);color:#fff;background:transparent}
+
+  /* HERO — 3-slide full banner */
+  .hero-wrap{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);overflow:hidden;background:var(--cream)}
+  .hero{position:relative;height:68vh}
+  @media (min-width:768px){.hero{height:78vh}}
+  .slides{position:absolute;inset:0;display:flex;transition:transform .7s ease}
+  .slide{position:relative;flex:0 0 100vw;height:100%}
+  .slide-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: none; /* remove the scale(2) */
+  }
+  .slide-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+  .slide-content{position:absolute;inset:0;display:flex;align-items:center}
+  .eyebrow{display:inline-flex;padding:4px 8px;border-radius:999px;background:var(--sand);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .hero-title{margin:16px 0 0;color:#fff;font-weight:800;line-height:1.05;font-size:32px}
+  @media (min-width:768px){.hero-title{font-size:44px}}
+  .hero-text{margin-top:12px;color:rgba(255,255,255,.9);max-width:52ch;font-size:18px}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+  .dots{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--sand);opacity:.5;border:none;cursor:pointer}
+  .dot.active{opacity:1}
+
+  /* SECTION: Butcher & Bakery — classic cards, NO overlay */
+  .cards{padding:56px 0}
+  .grid-2{display:grid;gap:24px}
+  @media (min-width:768px){.grid-2{grid-template-columns:1fr 1fr}}
+  .card{border:1px solid var(--sand);border-radius:24px;overflow:hidden;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+  .card-media{aspect-ratio:3/2;overflow:hidden}
+  .card-media img{width:100%;height:100%;object-fit:cover}
+  .card-body{padding:28px}
+  .h2{font-size:28px;font-weight:800;margin:0}
+  @media (min-width:768px){.h2{font-size:32px}}
+  .card-text{margin-top:10px;color:#333;font-size:16px}
+  .card-ctas{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+
+  /* SECTION: Promos / New products */
+  .promos{padding:56px 0}
+  .promo-box{border:1px solid var(--sand);border-radius:24px;background:var(--sand);padding:28px}
+  .promo-grid{display:grid;gap:16px;margin-top:20px}
+  @media (min-width:768px){.promo-grid{grid-template-columns:repeat(3,1fr)}}
+  .promo{background:#fff;border:1px solid var(--sand);border-radius:16px;overflow:hidden}
+  .promo .ph{height:140px;background:#f3f3f3 url('images/promo-placeholder.jpg') center/cover no-repeat}
+  .promo .pd{padding:14px}
+  .promo .tt{font-weight:700;margin:0 0 6px}
+  .promo .ds{margin:0;color:#333}
+
+  /* Visit / Hours kept as-is (light border cards) */
+  .visit{padding:0 0 80px}
+  .visit-grid{display:grid;gap:24px}
+  @media (min-width:768px){.visit-grid{grid-template-columns:1fr 1fr}}
+  .visit-card{border:1px solid var(--sand);background:#fff;border-radius:24px;overflow:hidden;padding:24px}
+  .visit-title{font-size:24px;font-weight:800;margin:0}
+  .list{list-style:none;padding:0;margin:12px 0 0}
+  .list li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--sand);padding:10px 0}
+
+  /* Footer */
+  footer{border-top:1px solid var(--sand);background:var(--cream);padding:40px 16px;text-align:center;font-size:14px}
+
+  /* hide desktop nav on small screens */
+.nav-desktop { display:none; }
+@media (min-width:768px){ .nav-desktop { display:flex; gap:24px; } }
+
+/* place actions; hide call/order on very small if you want */
+.actions{ display:flex; align-items:center; gap:8px; }
+
+/* Hamburger */
+.nav-toggle{
+  display:inline-flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:4px;
+  width:40px; height:40px;
+  margin-left:4px;
+  border:1px solid var(--sand);
+  border-radius:10px;
+  background:#fff;
+}
+.nav-toggle .bar{
+  display:block; width:18px; height:2px; background:var(--ink); margin:0 auto;
+  transition:transform .2s ease, opacity .2s ease;
+}
+@media (min-width:768px){ .nav-toggle{ display:none; } }
+
+/* Mobile menu panel */
+.mobile-menu{
+  position:fixed; top:103px; left:0; right:0; /* 64px ~ header height */
+  background:#fff;
+  border-bottom:1px solid var(--sand);
+  z-index:900;
+  display:grid;
+  gap:8px;
+  padding:16px;
+  transform:translateY(-8px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+.mobile-menu.open{
+  transform:translateY(0);
+  opacity:1;
+  pointer-events:auto;
+}
+.mm-link{
+  padding:12px 10px;
+  border-radius:10px;
+  background:#faf9f5;
+  border:1px solid var(--sand);
+  text-decoration:none;
+  color:var(--ink);
+}
+.mm-ctas{ display:flex; gap:8px; padding-top:8px; }
+
+/* lock body scroll when menu is open */
+.body-lock{ overflow:hidden; }
+
+/* make header a bit taller on mobile so menu clears it */
+header{ position:sticky; top:0; z-index:950; }
+.header-inner{ min-height:64px; }
+
+</style>
+</head>
+
+<body>
+  <!-- Announcement -->
+  <div class="announcement">
+    <div class="container">
+      Authentic Brazilian butcher, bakery & grocery • 494 Main St, Woburn, MA 01801
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="images/logo.png" alt="Casanova logo" />
+
+      </div>
+
+      <!-- Desktop nav -->
+      <nav class="nav-desktop">
+        <a href="#butcher">Butcher</a>
+        <a href="#bakery">Bakery</a>
+        <a href="#grocery">Brazilian Products</a>
+        <a href="#visit">Visit</a>
+        <a href="#shop-online">Shop Online</a>
+        <a href="catering.html">Holidays Catering</a>
+        <a href="trabalhe-conosco.html">Work With Us</a>
+      </nav>
+
+      <div class="actions">
+        <a class="btn btn-outline" href="tel: (781) 935-3800">Call</a>
+        <a class="btn btn-dark" href="#shop-online">Order Online</a>
+
+        <!-- Mobile hamburger -->
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu panel -->
+    <div class="mobile-menu" id="mobileMenu" hidden>
+      <a href="#butcher" class="mm-link">Butcher</a>
+      <a href="#bakery" class="mm-link">Bakery</a>
+      <a href="#grocery" class="mm-link">Brazilian Products</a>
+      <a href="#visit" class="mm-link">Visit</a>
+      <a href="#shop-online" class="mm-link">Shop Online</a>
+      <a href="catering.html" class="mm-link">Holidays Catering</a>
+      <a href="trabalhe-conosco.html" class="mm-link">Work With Us</a>
+      <div class="mm-ctas">
+        <a class="btn btn-outline" href="tel: (781) 935-3800">Call</a>
+        <a class="btn btn-red" href="#shop-online">Order Online</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- HERO — 3-slide full banner -->
+  <section class="hero-wrap">
+    <div class="hero">
+      <div class="slides" id="slides">
+        <!-- Slide 1 -->
+        <div class="slide">
+          <img class="slide-img" src="images/front1.jpg" alt="Butcher • Bakery • Brazilian Grocery">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <div class="container">
+              <span class="eyebrow">Brazilian Owned</span>
+              <h1 class="hero-title">Butcher • Bakery • Brazilian Grocer</h1>
+              <p class="hero-text">The flavors of Brasil in Woburn. Premium cuts (picanha, fraldinha), fresh bakery (pão de queijo, coxinha) and the Brazilian staples you miss at home.</p>
+              <div class="hero-ctas">
+                <a class="btn btn-red" href="https://www.grubhub.com/restaurant/casa-nova-butcher-shop-494-main-st-woburn/2874271"> Order Online</a>
+                <a class="btn btn-ghost" href="#visit">Visit Us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+          <img class="slide-img" src="images/butcher.jpg" alt="Picanha, Fraldinha & More">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <div class="container">
+              <span class="eyebrow">Fresh Cuts Daily</span>
+              <h1 class="hero-title">Picanha, Fraldinha & More</h1>
+              <p class="hero-text">Traditional Brazilian butchery — trimmed in-house and ready for your churrasco.</p>
+              <div class="hero-ctas">
+                <a class="btn btn-red" href="https://www.grubhub.com/restaurant/casa-nova-butcher-shop-494-main-st-woburn/2874271">Order Online</a>
+                <a class="btn btn-ghost" href="#visit">Visit Us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+          <img class="slide-img" src="images/bakery1.png" alt="Bakery Favorites">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <div class="container">
+              <span class="eyebrow">Every Morning</span>
+              <h1 class="hero-title">Bakery Favorites</h1>
+              <p class="hero-text">Pão de queijo, coxinha, empadas, brigadeiro & pudim fresh daily.</p>
+              <div class="hero-ctas">
+                <a class="btn btn-red" href="https://www.grubhub.com/restaurant/casa-nova-butcher-shop-494-main-st-woburn/2874271">Order Online</a>
+                <a class="btn btn-ghost" href="#visit">Visit Us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- dots -->
+      <div class="dots" id="dots"></div>
+    </div>
+  </section>
+
+  <!-- BUTCHER & BAKERY — classic cards (no overlay) -->
+  <section class="cards">
+    <div class="container grid-2">
+
+      <article class="card" id="butcher">
+        <div class="card-media">
+          <!-- replace to your image path -->
+          <img src="images/butcher.jpg" alt="Butcher counter">
+        </div>
+        <div class="card-body">
+          <h2 class="h2">The Butcher</h2>
+          <p class="card-text">Prime Brazilian cuts trimmed in-house: picanha, alcatra, fraldinha, costela and more. Marinades available on request.</p>
+          <div class="card-ctas">
+            <a class="btn btn-outline" href="#visit">Visit Us</a>
+            <a class="btn btn-red" href="https://www.grubhub.com/restaurant/casa-nova-butcher-shop-494-main-st-woburn/2874271">Order Online</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="bakery">
+        <div class="card-media">
+          <!-- replace to your image path -->
+          <img src="images/bakery1.png" alt="Brazilian bakery">
+        </div>
+        <div class="card-body">
+          <h2 class="h2">The Bakery</h2>
+          <p class="card-text">Every morning: pão de queijo, coxinha, empadas and house desserts like brigadeiro & pudim.</p>
+          <div class="card-ctas">
+            <a class="btn btn-outline" href="#visit">Visit Us</a>
+            <a class="btn btn-red" href="https://www.grubhub.com/restaurant/casa-nova-butcher-shop-494-main-st-woburn/2874271">Order Online</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- PROMOS & NEW PRODUCTS -->
+  <section class="promos" id="grocery">
+    <div class="container">
+      <div class="promo-box">
+        <h2 class="h2" style="margin:0 0 6px">Our Favorites</h2>
+        <p style="margin:0 0 12px">Order online your favorite Brazilian Food.</p>
+
+        <div class="promo-grid">
+          <!-- CARD 1 -->
+          <div class="promo">
+            <div class="ph" style="background-image:url('https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_150,q_auto:low,fl_lossy,dpr_2.0,c_fill,f_auto,h_150/pst81zneis0heab0nipd')"></div>
+            <div class="pd">
+              <div class="tt">Box Casa Nova Burger</div>
+              <p class="ds">2x casa nova burgr with fries.</p>
+            </div>
+          </div>
+          <!-- CARD 2 -->
+          <div class="promo">
+            <div class="ph" style="background-image:url('https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_150,q_auto:low,fl_lossy,dpr_2.0,c_fill,f_auto,h_153/reqhno1vwrdtvyrohftx')"></div>
+            <div class="pd">
+              <div class="tt">Plate of the Day</div>
+              <p class="ds">Please call 781 935-3800 for our daily special</p>
+            </div>
+          </div>
+          <!-- CARD 3 -->
+          <div class="promo">
+            <div class="ph" style="background-image:url('https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_150,q_auto:low,fl_lossy,dpr_2.0,c_fill,f_auto,h_150/u3x12hvtfd2jurluuks7')"></div>
+            <div class="pd">
+              <div class="tt">Acai Bowl</div>
+              <p class="ds">Craving acai bowls? We offer convenient delivery and pickup options for our delicious acai bowls.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <a class="btn btn-red" href="https://www.grubhub.com/restaurant/casa-nova-butcher-shop-494-main-st-woburn/2874271">Oder Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT & HOURS (unchanged) -->
+  <section class="visit" id="visit">
+    <div class="container visit-grid">
+      <div class="visit-card">
+        <h3 class="visit-title">Visit Us</h3>
+        <p style="margin-top:8px">494 Main St, Woburn, MA 01801</p>
+        <a class="underline" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px" href="https://maps.google.com/?q=494+Main+St,+Woburn,+MA+01801">
+          Get Directions
+        </a>
+        <div style="margin-top:16px;border:1px solid var(--sand);border-radius:16px;overflow:hidden">
+          <iframe title="map" style="width:100%;height:260px;border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=494%20Main%20St,%20Woburn,%20MA%2001801&output=embed"></iframe>
+        </div>
+      </div>
+
+      <div class="visit-card">
+        <h3 class="visit-title">Hours & Contact</h3>
+        <ul class="list">
+          <li><span>Mon–Fri</span><span>9:00a – 7:00p</span></li>
+          <li><span>Saturday</span><span>9:00a – 7:00p</span></li>
+          <li><span>Sunday</span><span>10:00a – 5:00p</span></li>
+        </ul>
+        <div style="margin-top:12px;display:grid;gap:8px">
+          <a href="tel:(781) 935-3800"> (781) 935-3800</a>
+          <a href="mailto:contact@casanovabutcher.com">contact@casanovabutchercafe.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+  <script src="https://elfsightcdn.com/platform.js" async></script>
+  <div class="elfsight-app-5953b6bb-4174-42dc-b2c7-aa87cd799ef7" data-elfsight-app-lazy></div>
+  <!-- Elfsight Popup | Untitled Popup -->
+<script src="https://elfsightcdn.com/platform.js" async></script>
+<div class="elfsight-app-cdd7d53e-bcf4-4d46-97e9-760aadf149e6" data-elfsight-app-lazy></div>
+  <!-- FOOTER (unchanged) -->
+  <footer>
+    © <span id="year"></span> Casanova Butcher Shop & Café • All rights reserved.
+  </footer>
+
+  <div id="google_translate_element"></div>
+
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple 3-slide carousel
+    const slides = document.getElementById('slides');
+    const count = slides.children.length;
+    const dotsWrap = document.getElementById('dots');
+    let idx = 0;
+    const dots = [];
+    for(let i=0;i<count;i++){
+      const b=document.createElement('button');
+      b.className='dot'+(i===0?' active':'');
+      b.addEventListener('click',()=>go(i));
+      dotsWrap.appendChild(b); dots.push(b);
+    }
+    function go(i){
+      idx=i;
+      slides.style.transform=`translateX(-${i*100}vw)`;
+      dots.forEach((d,k)=>d.classList.toggle('active',k===i));
+    }
+    let t=setInterval(()=>go((idx+1)%count),6000);
+    const hero=document.querySelector('.hero');
+    hero.addEventListener('mouseenter',()=>clearInterval(t));
+    hero.addEventListener('mouseleave',()=>t=setInterval(()=>go((idx+1)%count),6000));
+    // swipe
+    let sx=null;
+    hero.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+    hero.addEventListener('touchmove',e=>{
+      if(sx===null)return;
+      const dx=e.touches[0].clientX-sx;
+      if(Math.abs(dx)>50){ go(dx<0?(idx+1)%count:(idx-1+count)%count); sx=null; }
+    },{passive:true});
+
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,pt',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+
+  const toggle = document.querySelector('.nav-toggle');
+const panel  = document.getElementById('mobileMenu');
+
+function setOpen(open){
+  toggle.setAttribute('aria-expanded', open);
+  if(open){
+    panel.hidden = false;
+    requestAnimationFrame(()=> panel.classList.add('open'));
+    document.body.classList.add('body-lock');
+  }else{
+    panel.classList.remove('open');
+    setTimeout(()=> panel.hidden = true, 200);
+    document.body.classList.remove('body-lock');
+  }
+}
+
+toggle.addEventListener('click', ()=>{
+  const open = toggle.getAttribute('aria-expanded') === 'true';
+  setOpen(!open);
+});
+
+// close when clicking a menu link
+panel.addEventListener('click', (e)=>{
+  if(e.target.matches('.mm-link, .mm-ctas a')) setOpen(false);
+});
+
+// close on escape
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') setOpen(false);
+});
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
